@@ -1,0 +1,40 @@
+SequenceDiagram [frame=true framecolor=steelblue label="Foglalás nyilvántartó rendszer"] {
+  actor User
+  
+  lifeline "Kontroller" as FK
+  lifeline "FoglalásNézet" as FN
+  lifeline "FoglalásModel" as FM
+  collection "AdatbazisFajl (DAO)" as TAROLO
+ 
+  User --> FK "menüpont megnyitása foglalás id-val (STDIN)"
+  activate FK
+  
+  FK -c-> FM "new FoglalasModel()"
+  FK --> FM "get(id)"
+  activate FM
+  
+  FM --> TAROLO "keres(id)"
+  activate TAROLO
+  TAROLO -r-> FM "rekord"
+  deactivate TAROLO
+  
+  FM -r-> FK "foglalas"
+  deactivate FM
+  FK -c-> FN "new FoglalasNezet( foglalas )"
+
+  
+  
+  
+	FK --> FN "render()"
+  activate FN
+  FN -r-> FK "szoveg"
+  deactivate FN
+  
+  User <-r- FK "printelés a konzolra (STDOUT)"
+  deactivate FK
+  
+  
+  
+  FK -d-> FN "destroy()"
+  FK -d-> FM "destroy()"
+}
